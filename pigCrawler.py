@@ -2,6 +2,11 @@ from bs4 import *
 import requests
 import os 
 
+# from urllib.request import urlopen as uReq
+# url = 'https://www.heise.de/'
+# request = uReq(url)
+# pageHtml = request.read()
+
 # headers = { 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.61 Safari/537.36',
 #             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
 #             'Accept-Charset': 'ISO-8859-1,utf-8;q=0.7,*;q=0.3',

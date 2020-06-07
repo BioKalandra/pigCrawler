@@ -1,35 +1,36 @@
-from bs4 import *
-import os, random, requests
+from bs4 import BeautifulSoup as soup
 
 try:
-    file = open('assets/landscape.html', 'rb')
+    file = open('assets/index.html', 'rb')
     data=file.read()
-    print('erfolgreich geladen')
 except Exception as exception:
     print('Fehler :(', exception)
 
-soup = BeautifulSoup(data, "html.parser")
+soup = soup(data, "html.parser")
 
 links=[]
 
 try:
-    # images = soup.select('img[src^="https//images.pexels.com/photos"]')
-    # images = soup.select('img[src]')
     imagesUncut = soup.select('img[data-large-src]')
-    print('done')
-
     print('es gibt ' + str(len(imagesUncut)) + ' images')
 except Exception as exception:
     print('Fehler beim Soupen ...\n', exception)
 
 images=[]
 
+counter = 1
 for img in imagesUncut:
-    print(img)
-    print(img.find('.jpeg'))
+    image_with_parameters = img.get('data-large-src')
+    indexCutOff = image_with_parameters.find('.jpeg')+5
+    if (indexCutOff < 5):
+        continue
+    image = image_with_parameters[0 : indexCutOff]
+    images.append(image)
+    print(str(counter) + ' -> ' + image)
+    counter = counter +1
 
-for img in images:
-     links.append(img['src'])
+# for img in images:
+#      links.append(img['src'])
 
-for l in links:
-     print(l)
+# for l in links:
+#      print(l)
