@@ -1,4 +1,5 @@
 from bs4 import BeautifulSoup as soup
+from urllib import request as req
 
 try:
     file = open('assets/index.html', 'rb')
@@ -29,8 +30,4 @@ for img in imagesUncut:
     print(str(counter) + ' -> ' + image)
     counter = counter +1
 
-# for img in images:
-#      links.append(img['src'])
-
-# for l in links:
-#      print(l)
+req.urlretrieve(images[0])
