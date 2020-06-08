@@ -4,33 +4,34 @@ from urllib.request import urlopen as req
 from bs4 import BeautifulSoup as soup
 import re
 
-url = 'https://unsplash.com/s/photos/landscape'
+category = 'landscape'
+url = 'https://unsplash.com/s/photos/' + category
 regex = '(?<=700w,\s)https:\/\/images\.unsplash\.com\/photo.*(?=\s800w,\s)'
 
 try:
     request = req(url)
+    pageHtml = request.read()
     print('erfolgreich geladen')
 except Exception as exception:
     print('Fehler :( ', exception)
-pageHtml = request.read()
 
 links = []
-soup = soup(pageHtml, "html.parser")
+sFile = soup(pageHtml, "html.parser")
 
 try:
-    imagesUncut = soup.select('img[srcset]')
+    imagesUncut = sFile.select('a > div > img')
     print('es gibt ' + str(len(imagesUncut)) + ' images')
 except Exception as exception:
     print('Fehler beim Soupen ...\n', exception)
 
-images=[]
+# images=[]
 
-counter = 1
-for img in imagesUncut:
-    many_pics_string = img.get('src')
+# counter = 1
+# for img in imagesUncut:
+#     many_pics_string = img.get('src')
     
-    image = re.search(regex, many_pics_string)
-    print(image.group())
-    images.append(image[0])
-    print(str(counter) + ' -> ' + image.group())
-    counter = counter +1
+#     image = re.search(regex, many_pics_string)
+#     print(image.group())
+#     images.append(image[0])
+#     print(str(counter) + ' -> ' + image.group())
+#     counter = counter +1
