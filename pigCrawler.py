@@ -31,7 +31,7 @@ except Exception as exception:
 
 images=[]
 
-counter = 1
+
 for img in imagesUncut:
     # many_pics_string = img.get('src')
     picUrl = img.get('src')
@@ -39,7 +39,6 @@ for img in imagesUncut:
     # image = re.search(regex, many_pics_string)
     # print(image.group())
     images.append(picUrl)
-    counter = counter + 1
 
 # try:
 #     os.mkdir('assets/' + foldername)
@@ -49,6 +48,7 @@ for img in imagesUncut:
 #     print('Abbruch :(')
 #     sys.exit()
 
+counter = 1
 for img in images:
     try:
         if not img.startswith('https://'):
@@ -59,5 +59,6 @@ for img in images:
         r.raw.decode_content = True
         with open('assets/' + foldername + '/pic_' + str(counter) + '.jpeg', 'wb') as file:
             shutil.copyfileobj(r.raw, file)
+        counter = counter + 1
     except Exception as exception:
         print(exception)
