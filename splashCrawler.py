@@ -6,8 +6,10 @@ import re, os, sys
 
 category = 'landscape'
 url = 'https://unsplash.com/s/photos/' + category
-foldername = 'splash' + category
-regex = '(?<=300w,\s)https:\/\/images.unsplash.com\/photo.*w=400&amp;q=60'
+foldername = category
+quality = 7 #1-7
+regex = r'(?<=' + str(quality) + '00w,\s)https:\/\/images.unsplash.com\/photo.*w=' + str(quality+1) + '00&q=60(?=\s' + str(quality+1) + '00w)'
+regex = r'(?<=300w,\s)https:\/\/images.unsplash.com\/photo.*w=400&q=60(?=\s400w)'
 
 try:
     request = req(url)
@@ -46,7 +48,10 @@ except FileExistsError as exc:
 counter = 1
 for img in images:
     try:
-        print(img)
+        m = re.search(regex, img)
+        m.group(0)
+        print(m.group(0))
+        # print(img)
         r = reqPic.get(img, stream="true")
         if r.status_code != 200:
             raise Exception('Fehler beim Aufbauen der Verbindung')
