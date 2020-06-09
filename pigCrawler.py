@@ -23,9 +23,9 @@ links = []
 sFile = soup(pageHtml, "html.parser")
 
 try:
-    # imagesUncut = sFile.select('a > div > img')
     imagesUncut = sFile.select('img')
-    print('es gibt ' + str(len(imagesUncut)) + ' images')
+    amount = len(imagesUncut)
+    print('Es gibt ' + str(amount) + ' images')
 except Exception as exception:
     print('Fehler beim Soupen ...\n', exception)
 
@@ -33,20 +33,18 @@ images=[]
 
 
 for img in imagesUncut:
-    # many_pics_string = img.get('src')
     picUrl = img.get('src')
-    
-    # image = re.search(regex, many_pics_string)
-    # print(image.group())
     images.append(picUrl)
 
-# try:
-#     os.mkdir('assets/' + foldername)
-#     print('ordner erstellt')
-# except Exception as exc:
-#     print('Fehler beim Erstellen des Ordners(schon vorhanden??)')
-#     print('Abbruch :(')
-#     sys.exit()
+try:
+    folder = 'assets/' + foldername
+    if(os.path.exists(folder)) :
+        shutil.rmtree(folder, ignore_errors='true')
+        print('alter ordner gelöscht')
+    os.mkdir(folder)
+except FileExistsError as exc:
+    print('Fehler beim Erstellen/Löschen des Ordners')
+    sys.exit()
 
 counter = 1
 for img in images:
@@ -60,5 +58,8 @@ for img in images:
         with open('assets/' + foldername + '/pic_' + str(counter) + '.jpeg', 'wb') as file:
             shutil.copyfileobj(r.raw, file)
         counter = counter + 1
+        progress = ((counter*100)/amount)
+        display = str(round(progress, 2))
+        print('downloading: ' + display + '%')
     except Exception as exception:
         print(exception)
