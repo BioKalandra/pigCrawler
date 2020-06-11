@@ -1,8 +1,10 @@
 from urllib.request import urlopen as req
 import requests as reqPic  # to get image from the web
 from bs4 import BeautifulSoup as soup
+from selenium import webdriver
 import shutil # to save it locally
-import re, os, sys
+import re, os, sys, time
+
 
 category = 'landscape'
 url = 'https://unsplash.com/s/photos/' + category
@@ -10,15 +12,29 @@ foldername = category
 quality = 7 #1-7
 regex = r'(?<=' + str(quality) + '00w,\s)https:\/\/images.unsplash.com\/photo.*w=' + str(quality+1) + '00&q=60(?=\s' + str(quality+1) + '00w)'
 
+
 try:
-    request = req(url)
-    pageHtml = request.read()
+    driver = webdriver.PhantomJS()
+    driver.get(url)
+    # scrolling
+    lastHeight = driver.execute_script("return document.body.scrollHeight")
+    print(lastHeight)
+    pause = 0.5
+    while True:
+        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        time.sleep(pause)
+        newHeight = driver.execute_script("return document.body.scrollHeight")
+        if newHeight == lastHeight:
+            break
+        lastHeight = newHeight
+        print(lastHeight)
+    html = driver.page_source
     print('erfolgreich geladen')
 except Exception as exception:
     print('Fehler :( ', exception)
 
 links = []
-sFile = soup(pageHtml, "html.parser")
+sFile = soup(html, "html.parser")
 
 try:
     imagesUncut = sFile.select('a > div > img')
@@ -29,6 +45,7 @@ except Exception as exception:
 
 images=[]
 
+sys.exit()
 
 for img in imagesUncut:
     picUrl = img.get('srcset')
