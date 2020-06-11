@@ -2,24 +2,25 @@ from urllib.request import urlopen as req
 import requests as reqPic  # to get image from the web
 from bs4 import BeautifulSoup as soup
 from selenium import webdriver
+from webdriver_manager.chrome import ChromeDriverManager
 import shutil # to save it locally
 import re, os, sys, time
 
 
 category = 'landscape'
-url = 'https://unsplash.com/s/photos/' + category
+url = 'https://www.pexels.com/search/mountains/'
 foldername = category
 quality = 7 #1-7
 regex = r'(?<=' + str(quality) + '00w,\s)https:\/\/images.unsplash.com\/photo.*w=' + str(quality+1) + '00&q=60(?=\s' + str(quality+1) + '00w)'
 
 
 try:
-    driver = webdriver.PhantomJS()
+    driver = webdriver.Chrome(ChromeDriverManager().install())
     driver.get(url)
     # scrolling
     lastHeight = driver.execute_script("return document.body.scrollHeight")
-    print(lastHeight)
-    pause = 0.5
+    print('lastheight ist ' + str(lastHeight))
+    pause = 0.3
     while True:
         driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
         time.sleep(pause)
@@ -27,7 +28,9 @@ try:
         if newHeight == lastHeight:
             break
         lastHeight = newHeight
-        print(lastHeight)
+        print('lastheight ist ' + str(lastHeight))
+        if(lastHeight > 50000):
+            break
     html = driver.page_source
     print('erfolgreich geladen')
 except Exception as exception:
@@ -38,6 +41,7 @@ sFile = soup(html, "html.parser")
 
 try:
     imagesUncut = sFile.select('a > div > img')
+    sFile.select(x)
     amount = len(imagesUncut)
     print('Es gibt ' + str(amount) + ' images')
 except Exception as exception:
@@ -45,7 +49,6 @@ except Exception as exception:
 
 images=[]
 
-sys.exit()
 
 for img in imagesUncut:
     picUrl = img.get('srcset')
